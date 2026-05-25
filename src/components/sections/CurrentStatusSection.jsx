@@ -4,34 +4,47 @@ import SectionWrapper from '../ui/SectionWrapper.jsx'
 import CountryBarChart from '../charts/CountryBarChart.jsx'
 import PaceStatusBadge from '../ui/PaceStatusBadge.jsx'
 import { EU27_CODES } from '../../utils/regions.js'
+import { SECTOR_LABELS_ES } from '../../utils/colors.js'
 
-const TARGET = 42.5
 const SORT_OPTIONS = [
   { value: 'share',    label: 'Cuota actual ↑' },
   { value: 'gap',      label: 'Brecha al objetivo ↓' },
   { value: 'required', label: 'Ritmo necesario ↓' },
 ]
 
+const SECTOR_TO_NRGBAL = {
+  'Total':             'REN',
+  'Electricity':       'REN_ELC',
+  'Heating & Cooling': 'REN_HEAT_CL',
+  'Transport':         'REN_TRA',
+}
+
 export default function CurrentStatusSection() {
-  const { latestTotalAll, selectedRegion, latestYear } = useData()
+  const { latestAllSectors, selectedSector, selectedRegion, latestYear } = useData()
   const [sortBy, setSortBy] = useState('share')
   const [showNonEU, setShowNonEU] = useState(false)
 
+  const currentNrgBal = SECTOR_TO_NRGBAL[selectedSector] || 'REN'
+  const sectorLabel   = SECTOR_LABELS_ES[selectedSector] || selectedSector
+
   const chartData = useMemo(() => {
-    let data = latestTotalAll.filter(d => {
-      if (d.geo_code === 'EU27_2020') return false // aggregate shown separately
+    // Filter to selected sector and apply region/non-EU filters
+    return latestAllSectors.filter(d => {
+      if (d.nrg_bal !== currentNrgBal) return false
+      if (d.geo_code === 'EU27_2020') return false
       if (!showNonEU && !EU27_CODES.includes(d.geo_code)) return false
       if (selectedRegion && d.region !== selectedRegion) return false
       return d.share_ren_pct != null
     })
-    return data
-  }, [latestTotalAll, selectedRegion, showNonEU])
+  }, [latestAllSectors, currentNrgBal, selectedRegion, showNonEU])
+
+  const isNonTotal = selectedSector !== 'Total'
 
   return (
     <SectionWrapper
       id="estado-actual"
       title="Estado actual: ¿dónde está cada país?"
-      subtitle={`Cuota de energía renovable (% del consumo final bruto) en ${latestYear}. Línea azul: objetivo europeo 42,5 % para 2030.`}
+      subtitle={`Cuota renovable — sector: ${sectorLabel} — en ${latestYear}. ${isNonTotal ? 'Nota: la línea de referencia (42,5 %) corresponde al objetivo total, no al objetivo sectorial específico.' : 'Línea azul: objetivo europeo 42,5 % para 2030.'}`}
     >
       {/* Controls */}
       <div className="flex flex-wrap gap-4 mb-6 items-center">
@@ -72,7 +85,7 @@ export default function CurrentStatusSection() {
           ['On track',           'En camino'],
           ['Needs acceleration', 'Necesita acelerar'],
           ['Far behind',         'Muy retrasado'],
-        ].map(([status, label]) => (
+        ].map(([status]) => (
           <PaceStatusBadge key={status} status={status} small />
         ))}
         <span className="text-gray-400 self-center ml-2">

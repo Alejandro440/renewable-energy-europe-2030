@@ -9,38 +9,24 @@
  * Si recent_pace >= required_pace: el país está en camino (verde/azul).
  */
 import React from 'react'
-import {
-  ScatterChart, Scatter, XAxis, YAxis, ZAxis,
-  CartesianGrid, Tooltip, ReferenceLine,
-  ResponsiveContainer, Cell,
-} from 'recharts'
 import { PACE_STATUS_COLORS } from '../../utils/colors.js'
-import PaceStatusBadge from '../ui/PaceStatusBadge.jsx'
 
-function CustomTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null
-  const d = payload[0].payload
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm max-w-xs">
-      <p className="font-bold mb-1">{d.geo_name}</p>
-      <p className="text-blue-700">Ritmo observado: <strong>{d.recent_pace != null ? `${d.recent_pace.toFixed(2)} pp/año` : '–'}</strong></p>
-      <p className="text-red-700">Ritmo necesario: <strong>{d.required_pace === 0 ? 'Objetivo alcanzado ✓' : `${d.required_pace.toFixed(2)} pp/año`}</strong></p>
-      <p className="text-gray-600 mt-1">Cuota {d.year}: <strong>{d.share_ren_pct?.toFixed(1)}%</strong></p>
-      <div className="mt-2"><PaceStatusBadge status={d.pace_status} small /></div>
-    </div>
-  )
-}
-
-// Custom dot renderer for the dumbbell
-function DumbbellRow({ x, y, data, xScale, height = 18 }) { return null }
-
-// We render a custom SVG-based dumbbell via a pure Recharts approach
-// using two overlapping bar charts + custom lines
+/**
+ * Pure SVG dumbbell chart – no Recharts dependency.
+ * Each country row shows:
+ *   ● required_pace (circle, colored by pace_status)
+ *   ◆ recent_pace   (diamond, green if on track, grey otherwise)
+ * A connector line joins the two dots.
+ */
 export default function PaceDumbbellChart({ data }) {
   // Sort: countries far behind first (highest required_pace)
   const sorted = [...data]
     .filter(d => d.recent_pace != null)
     .sort((a, b) => b.required_pace - a.required_pace)
+
+  if (sorted.length === 0) {
+    return <p className="text-blue-300 text-sm">Sin datos para mostrar.</p>
+  }
 
   const maxVal = Math.max(
     ...sorted.map(d => Math.max(d.required_pace || 0, d.recent_pace || 0)),

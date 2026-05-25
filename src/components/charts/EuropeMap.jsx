@@ -12,12 +12,6 @@ import { pct } from '../../utils/formatters.js'
 
 const BASE_URL = import.meta.env.BASE_URL || '/'
 
-// European bounding box (roughly)
-const EU_BOUNDS = {
-  minLon: -25, maxLon: 45,
-  minLat: 34,  maxLat: 72,
-}
-
 // Map metric choices
 const METRICS = [
   { value: 'share',    label: 'Cuota renovable (%)' },

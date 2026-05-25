@@ -7,9 +7,18 @@ import { EU27_CODES, COUNTRY_META } from '../../utils/regions.js'
 // Pre-selected country examples for interest
 const DEFAULT_COUNTRIES = ['DE', 'SE', 'PL', 'ES']
 
+const SECTOR_TO_NRGBAL = {
+  'Total':             'REN',
+  'Electricity':       'REN_ELC',
+  'Heating & Cooling': 'REN_HEAT_CL',
+  'Transport':         'REN_TRA',
+}
+
 export default function TimelineSection() {
-  const { rawData, eu27TimeSeries } = useData()
+  const { rawData, selectedSector } = useData()
   const [selected, setSelected] = useState(DEFAULT_COUNTRIES)
+
+  const currentNrgBal = SECTOR_TO_NRGBAL[selectedSector] || 'REN'
 
   // Available EU-27 countries
   const available = EU27_CODES.map(code => ({
@@ -25,13 +34,20 @@ export default function TimelineSection() {
     )
   }
 
+  // EU-27 time series for selected sector
+  const eu27TimeSeries = useMemo(() => {
+    return rawData
+      .filter(d => d.geo_code === 'EU27_2020' && d.nrg_bal === currentNrgBal)
+      .sort((a, b) => a.year - b.year)
+  }, [rawData, currentNrgBal])
+
   const countrySeries = useMemo(() => {
     return selected.map(code =>
       rawData
-        .filter(d => d.geo_code === code && d.nrg_bal === 'REN')
+        .filter(d => d.geo_code === code && d.nrg_bal === currentNrgBal)
         .sort((a, b) => a.year - b.year)
     )
-  }, [rawData, selected])
+  }, [rawData, selected, currentNrgBal])
 
   const countryNames = selected.map(code => COUNTRY_META[code]?.name || code)
 

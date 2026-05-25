@@ -3,7 +3,7 @@
  * Muestra los cuatro sectores en paralelo para revelar las asimetrías.
  * Destaca especialmente la brecha electricidad vs transporte.
  */
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useData } from '../../context/DataContext.jsx'
 import SectionWrapper from '../ui/SectionWrapper.jsx'
 import SectorSmallMultiples from '../charts/SectorSmallMultiples.jsx'
@@ -12,29 +12,24 @@ import { EU27_CODES, COUNTRY_META } from '../../utils/regions.js'
 const LATEST_YEAR = 2024
 
 export default function SectoralSection() {
-  const { latestAllSectors, selectedRegion, rawData } = useData()
-  const [selectedCountry, setSelectedCountry] = useState(null)
+  const { latestAllSectors, selectedRegion } = useData()
 
-  // Countries to show
+  // Countries to show (respects region filter)
   const geoCodes = useMemo(() => {
-    let codes = EU27_CODES
-    if (selectedRegion) {
-      codes = EU27_CODES.filter(c => COUNTRY_META[c]?.region === selectedRegion)
-    }
-    return codes
+    if (!selectedRegion) return EU27_CODES
+    return EU27_CODES.filter(c => COUNTRY_META[c]?.region === selectedRegion)
   }, [selectedRegion])
 
-  // For the scatter comparison (electricidad vs transporte for selected country)
-  const countryOptions = EU27_CODES.map(code => ({
-    code,
-    name: COUNTRY_META[code]?.name || code,
-  })).sort((a, b) => a.name.localeCompare(b.name))
-
-  // Aggregate stats for the insight box
-  const elec = latestAllSectors.filter(d => d.nrg_bal === 'REN_ELC' && EU27_CODES.includes(d.geo_code))
-  const tran = latestAllSectors.filter(d => d.nrg_bal === 'REN_TRA' && EU27_CODES.includes(d.geo_code))
-  const avgElec = elec.length ? (elec.reduce((s,d) => s+(d.share_ren_pct||0),0)/elec.length).toFixed(1) : '–'
-  const avgTran = tran.length ? (tran.reduce((s,d) => s+(d.share_ren_pct||0),0)/tran.length).toFixed(1) : '–'
+  // Aggregate stats for the insight box (EU-27 average for electricity vs transport)
+  const elec = latestAllSectors.filter(d => d.nrg_bal === 'REN_ELC' && EU27_CODES.includes(d.geo_code) && d.share_ren_pct != null)
+  const tran = latestAllSectors.filter(d => d.nrg_bal === 'REN_TRA' && EU27_CODES.includes(d.geo_code) && d.share_ren_pct != null)
+  const avgElecNum = elec.length ? elec.reduce((s,d) => s + d.share_ren_pct, 0) / elec.length : null
+  const avgTranNum = tran.length ? tran.reduce((s,d) => s + d.share_ren_pct, 0) / tran.length : null
+  const avgElec = avgElecNum != null ? avgElecNum.toFixed(1) : '–'
+  const avgTran = avgTranNum != null ? avgTranNum.toFixed(1) : '–'
+  const gapElecTran = (avgElecNum != null && avgTranNum != null)
+    ? (avgElecNum - avgTranNum).toFixed(1)
+    : '–'
 
   return (
     <SectionWrapper
@@ -49,7 +44,7 @@ export default function SectoralSection() {
           Un país puede tener una cuota total moderada mientras esconde diferencias sectoriales
           enormes. En 2024, la UE-27 promedia <strong>{avgElec}%</strong> de renovables en
           electricidad frente a solo <strong>{avgTran}%</strong> en transporte —una brecha
-          de <strong>{(parseFloat(avgElec) - parseFloat(avgTran)).toFixed(1)} pp</strong>.
+          de <strong>{gapElecTran} pp</strong>.
           Esta asimetría estructural sugiere que la transición energética en el transporte
           está muy por detrás de la del sistema eléctrico.
         </p>
