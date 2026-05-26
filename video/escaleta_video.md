@@ -34,7 +34,7 @@
 
 ## Interacciones a demostrar durante el vídeo
 
-1. **FilterBar – Sector:** cambiar de "Total" a "Electricidad" (y ver efecto en Estado actual)
+1. **FilterBar – Sector:** cambiar de "Total" a "Electricidad" y mostrar su efecto en la evolución temporal (no en Estado actual, que siempre muestra el total)
 2. **FilterBar – Región:** filtrar a "Norte" (y ver efecto en Sectores)
 3. **Estado actual – Ordenación:** cambiar de "Cuota actual" a "Ritmo necesario"
 4. **Estado actual – Toggle no-EU:** activar Islandia y Noruega
@@ -49,7 +49,7 @@
 - [ ] La visualización está desplegada online y abre sin errores
 - [ ] El mapa ha cargado correctamente (países coloreados, no grises)
 - [ ] Los tooltips funcionan al hacer hover
-- [ ] Los filtros de sector y región actualizan las secciones en tiempo real
+- [ ] El filtro de sector actualiza las vistas donde aplica metodológicamente (evolución temporal, small multiples); el filtro de región actualiza las secciones comparativas correspondientes. Estado actual se mantiene siempre en sector Total.
 - [ ] La resolución de pantalla es ≥ 1280px (para que todos los gráficos sean legibles)
 - [ ] El audio funciona correctamente (micro probado)
 - [ ] La grabación de pantalla captura el área completa del navegador

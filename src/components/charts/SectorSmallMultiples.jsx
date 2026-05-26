@@ -86,7 +86,7 @@ function SectorPanel({ sector, data, maxVal }) {
         </BarChart>
       </ResponsiveContainer>
       <p className="text-xs text-gray-400 mt-1 text-right">
-        Media UE-27: <strong>
+        Media países visibles: <strong>
           {(sorted.filter(d => d.share_ren_pct != null).reduce((s, d) => s + (d.share_ren_pct||0), 0) /
            Math.max(1, sorted.filter(d => d.share_ren_pct != null).length)).toFixed(1)}%
         </strong>

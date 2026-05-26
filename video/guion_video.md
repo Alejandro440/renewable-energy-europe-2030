@@ -87,9 +87,9 @@ El agregado EU27_2020 de Eurostat sitúa la cuota en electricidad en torno al 46
 
 Con el filtro de región activo —aquí selecciono los países del Norte— vemos cómo incluso en esta región líder, el transporte sigue siendo el talón de Aquiles. Los países nórdicos tienen electricidades casi completamente renovables, pero sus cuotas de transporte son similares a las del resto de Europa.
 
-*[Mostrar FilterBar: cambiar a sector Electricidad]*
+*[Mostrar FilterBar: cambiar a sector Electricidad y navegar a la sección Evolución temporal]*
 
-El selector de sector superior permite cambiar la vista principal de toda la aplicación para focalizarse en cualquier sector. Esto conecta la sección sectorial con la de estado actual."
+El selector superior permite cambiar el sector analizado en las vistas donde tiene sentido metodológico, especialmente en la evolución temporal. La sección Estado actual se mantiene fija en la cuota total porque las métricas de brecha, ritmo necesario y estado de avance solo se calculan para el total."
 
 ---
 
