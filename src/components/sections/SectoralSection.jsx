@@ -20,11 +20,12 @@ export default function SectoralSection() {
     return EU27_CODES.filter(c => COUNTRY_META[c]?.region === selectedRegion)
   }, [selectedRegion])
 
-  // Aggregate stats for the insight box (EU-27 average for electricity vs transport)
-  const elec = latestAllSectors.filter(d => d.nrg_bal === 'REN_ELC' && EU27_CODES.includes(d.geo_code) && d.share_ren_pct != null)
-  const tran = latestAllSectors.filter(d => d.nrg_bal === 'REN_TRA' && EU27_CODES.includes(d.geo_code) && d.share_ren_pct != null)
-  const avgElecNum = elec.length ? elec.reduce((s,d) => s + d.share_ren_pct, 0) / elec.length : null
-  const avgTranNum = tran.length ? tran.reduce((s,d) => s + d.share_ren_pct, 0) / tran.length : null
+  // Aggregate stats for the insight box — use the EU27_2020 aggregate row from Eurostat,
+  // not a simple mean of country values (which would be unweighted).
+  const eu27Elec = latestAllSectors.find(d => d.geo_code === 'EU27_2020' && d.nrg_bal === 'REN_ELC')
+  const eu27Tran = latestAllSectors.find(d => d.geo_code === 'EU27_2020' && d.nrg_bal === 'REN_TRA')
+  const avgElecNum = eu27Elec?.share_ren_pct ?? null
+  const avgTranNum = eu27Tran?.share_ren_pct ?? null
   const avgElec = avgElecNum != null ? avgElecNum.toFixed(1) : '–'
   const avgTran = avgTranNum != null ? avgTranNum.toFixed(1) : '–'
   const gapElecTran = (avgElecNum != null && avgTranNum != null)
@@ -42,9 +43,9 @@ export default function SectoralSection() {
         <h3 className="font-semibold text-amber-900 mb-2">¿Por qué esta asimetría importa?</h3>
         <p className="text-amber-800 text-sm leading-relaxed mb-3">
           Un país puede tener una cuota total moderada mientras esconde diferencias sectoriales
-          enormes. En 2024, la UE-27 promedia <strong>{avgElec}%</strong> de renovables en
-          electricidad frente a solo <strong>{avgTran}%</strong> en transporte —una brecha
-          de <strong>{gapElecTran} pp</strong>.
+          enormes. En 2024, el agregado EU27_2020 de Eurostat registra <strong>{avgElec}%</strong> de
+          renovables en electricidad frente a solo <strong>{avgTran}%</strong> en transporte
+          —una brecha de <strong>{gapElecTran} pp</strong>.
           Esta asimetría estructural sugiere que la transición energética en el transporte
           está muy por detrás de la del sistema eléctrico.
         </p>
@@ -69,7 +70,8 @@ export default function SectoralSection() {
       {/* Small multiples */}
       <p className="text-sm text-gray-600 mb-4">
         Cada panel muestra los países ordenados por cuota en ese sector.
-        La línea azul discontinua marca el objetivo 42,5 % (solo aplicable al total).
+        La línea azul discontinua del panel Total marca el objetivo 42,5 % de la Directiva RED III.
+        No se traza en los paneles sectoriales porque ese objetivo aplica al total, no a cada sector.
       </p>
       <SectorSmallMultiples
         allSectorsData={latestAllSectors}
@@ -78,10 +80,12 @@ export default function SectoralSection() {
 
       {/* Country detail note */}
       <div className="mt-6 bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm text-gray-700">
-        <strong>Nota metodológica:</strong> El objetivo del 42,5 % es para la cuota total de
-        energía renovable, no para cada sector individualmente. La Directiva RED III
-        establece sub-objetivos sectoriales específicos (p.ej., 14 % mínimo en transporte),
-        pero para mantener la comparabilidad, todos los paneles muestran la misma escala.
+        <strong>Nota metodológica:</strong> El objetivo del 42,5 % (línea azul discontinua)
+        se aplica a la <em>cuota total</em> de energía renovable, no a cada sector individualmente.
+        Por ello la línea de referencia solo aparece en el panel Total.
+        La Directiva RED III establece sub-objetivos sectoriales específicos
+        (p.ej., mínimo del 14,5 % en transporte para 2030), pero a efectos comparativos
+        todos los paneles comparten la misma escala en el eje X.
       </div>
 
       <p className="text-xs text-gray-400 mt-3">

@@ -190,10 +190,24 @@ def add_derived(df):
         total['gap_to_target_pp'].clip(lower=0) / YEARS_REMAIN
     ).round(3)
 
-    # recent_pace: average annual change 2019–2024 (5-year window)
-    recent = df[
-        (df['nrg_bal'] == 'REN') & (df['year'].between(2020, 2024))
-    ].groupby('geo_code')['yoy_change'].mean().round(3).rename('recent_pace')
+    # recent_pace: net annual change 2020→2024 (pp/year)
+    # Formula: (share_2024 − share_2020) / (2024 − 2020)
+    # Avoids including the 2019→2020 variation in the window.
+    recent_base = (
+        df[(df['nrg_bal'] == 'REN') & (df['year'] == 2020)]
+        [['geo_code', 'share_ren_pct']]
+        .rename(columns={'share_ren_pct': 'share_2020'})
+    )
+    recent_end = (
+        df[(df['nrg_bal'] == 'REN') & (df['year'] == LATEST_YEAR)]
+        [['geo_code', 'share_ren_pct']]
+        .rename(columns={'share_ren_pct': 'share_latest'})
+    )
+    recent_both = recent_base.merge(recent_end, on='geo_code')
+    recent_both['recent_pace'] = (
+        (recent_both['share_latest'] - recent_both['share_2020']) / (LATEST_YEAR - 2020)
+    ).round(3)
+    recent = recent_both.set_index('geo_code')['recent_pace']
     total = total.merge(recent, on='geo_code', how='left')
 
     # pace_status classification

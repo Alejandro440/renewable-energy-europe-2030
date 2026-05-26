@@ -82,24 +82,47 @@ export default function EuropeMap({ countryData }) {
       .attr('stroke', 'white')
       .attr('stroke-width', 0.5)
       .style('cursor', 'pointer')
-      .on('mouseover', (event, feature) => {
+      // Keyboard accessibility: tabIndex only for countries with data
+      .attr('tabindex', feature => {
+        const code = ISO3N_TO_CODE[parseInt(feature.id)]
+        return code && dataByCode[code] ? 0 : null
+      })
+      .attr('aria-label', feature => {
+        const code = ISO3N_TO_CODE[parseInt(feature.id)]
+        const d    = code ? dataByCode[code] : null
+        if (!d) return null
+        return `${d.geo_name}: ${d.share_ren_pct?.toFixed(1) ?? '–'}% cuota renovable, ritmo necesario ${d.required_pace?.toFixed(2) ?? '–'} pp/año`
+      })
+      .attr('role', feature => {
+        const code = ISO3N_TO_CODE[parseInt(feature.id)]
+        return code && dataByCode[code] ? 'button' : null
+      })
+      .on('mouseover focus', (event, feature) => {
         const iso3n = parseInt(feature.id)
         const code  = ISO3N_TO_CODE[iso3n]
         const d     = code ? dataByCode[code] : null
         if (d) {
           d3.select(event.currentTarget).attr('stroke-width', 2).attr('stroke', '#1e40af')
-          setTooltip({
-            visible: true,
-            x: event.offsetX,
-            y: event.offsetY,
-            content: d,
-          })
+          // For focus events, use element centroid; for mouse, use pointer position
+          const isFocus = event.type === 'focus'
+          let x, y
+          if (isFocus) {
+            const svgEl  = svgRef.current
+            const svgRect = svgEl.getBoundingClientRect()
+            const elRect  = event.currentTarget.getBoundingClientRect()
+            x = elRect.left - svgRect.left + elRect.width / 2
+            y = elRect.top  - svgRect.top
+          } else {
+            x = event.offsetX
+            y = event.offsetY
+          }
+          setTooltip({ visible: true, x, y, content: d })
         }
       })
       .on('mousemove', event => {
         setTooltip(prev => ({ ...prev, x: event.offsetX, y: event.offsetY }))
       })
-      .on('mouseout', (event) => {
+      .on('mouseout blur', (event) => {
         d3.select(event.currentTarget).attr('stroke-width', 0.5).attr('stroke', 'white')
         setTooltip(prev => ({ ...prev, visible: false }))
       })

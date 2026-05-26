@@ -79,9 +79,9 @@ La caja explicativa debajo del gráfico desglosa la fórmula para que cualquier 
 
 *[Señalar diferencias entre paneles]*
 
-La diferencia es estructural. En electricidad, varios países ya superan el 100% —Islandia, Noruega, Albania— porque exportan más renovables de las que consumen. En el panel de transporte, en cambio, la mayoría de países está por debajo del 15 %.
+La diferencia es estructural. En electricidad, Islandia y Noruega pueden superar el 100 % por su condición de exportadores netos de electricidad renovable —producen más de lo que consumen y exportan el excedente. En el panel de transporte, en cambio, la mayoría de países está por debajo del 15 %.
 
-La media de la UE-27 es de aproximadamente 46 % en electricidad frente a apenas un 10 % en transporte: una brecha de 36 puntos porcentuales entre el sector más avanzado y el más rezagado.
+El agregado EU27_2020 de Eurostat sitúa la cuota en electricidad en torno al 46 % y la de transporte en torno al 10 %: una brecha de más de 35 puntos porcentuales entre el sector más avanzado y el más rezagado.
 
 *[Usar el filtro de región: clic en 'Norte']*
 

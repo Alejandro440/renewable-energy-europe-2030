@@ -1,10 +1,18 @@
+/**
+ * CurrentStatusSection – situación actual de cada país (sector Total).
+ *
+ * Siempre muestra la cuota total de energía renovable (sector REN).
+ * Las métricas derivadas gap_to_target_pp, required_pace y pace_status
+ * solo son significativas para el sector total y se calculan únicamente
+ * para ese sector; por ello esta sección no varía con el filtro de sector.
+ * El análisis sectorial desglosado se encuentra en la sección "Sectores".
+ */
 import { useState, useMemo } from 'react'
 import { useData } from '../../context/DataContext.jsx'
 import SectionWrapper from '../ui/SectionWrapper.jsx'
 import CountryBarChart from '../charts/CountryBarChart.jsx'
 import PaceStatusBadge from '../ui/PaceStatusBadge.jsx'
 import { EU27_CODES } from '../../utils/regions.js'
-import { SECTOR_LABELS_ES } from '../../utils/colors.js'
 
 const SORT_OPTIONS = [
   { value: 'share',    label: 'Cuota actual ↑' },
@@ -12,39 +20,25 @@ const SORT_OPTIONS = [
   { value: 'required', label: 'Ritmo necesario ↓' },
 ]
 
-const SECTOR_TO_NRGBAL = {
-  'Total':             'REN',
-  'Electricity':       'REN_ELC',
-  'Heating & Cooling': 'REN_HEAT_CL',
-  'Transport':         'REN_TRA',
-}
-
 export default function CurrentStatusSection() {
-  const { latestAllSectors, selectedSector, selectedRegion, latestYear } = useData()
+  const { latestTotalAll, selectedRegion, latestYear } = useData()
   const [sortBy, setSortBy] = useState('share')
   const [showNonEU, setShowNonEU] = useState(false)
 
-  const currentNrgBal = SECTOR_TO_NRGBAL[selectedSector] || 'REN'
-  const sectorLabel   = SECTOR_LABELS_ES[selectedSector] || selectedSector
-
   const chartData = useMemo(() => {
-    // Filter to selected sector and apply region/non-EU filters
-    return latestAllSectors.filter(d => {
-      if (d.nrg_bal !== currentNrgBal) return false
+    return latestTotalAll.filter(d => {
       if (d.geo_code === 'EU27_2020') return false
       if (!showNonEU && !EU27_CODES.includes(d.geo_code)) return false
       if (selectedRegion && d.region !== selectedRegion) return false
       return d.share_ren_pct != null
     })
-  }, [latestAllSectors, currentNrgBal, selectedRegion, showNonEU])
-
-  const isNonTotal = selectedSector !== 'Total'
+  }, [latestTotalAll, selectedRegion, showNonEU])
 
   return (
     <SectionWrapper
       id="estado-actual"
       title="Estado actual: ¿dónde está cada país?"
-      subtitle={`Cuota renovable — sector: ${sectorLabel} — en ${latestYear}. ${isNonTotal ? 'Nota: la línea de referencia (42,5 %) corresponde al objetivo total, no al objetivo sectorial específico.' : 'Línea azul: objetivo europeo 42,5 % para 2030.'}`}
+      subtitle={`Cuota total de energía renovable en ${latestYear}. Línea azul: objetivo europeo 42,5 % para 2030 (Directiva RED III). El análisis sectorial desglosado está en la sección Sectores.`}
     >
       {/* Controls */}
       <div className="flex flex-wrap gap-4 mb-6 items-center">
@@ -81,15 +75,15 @@ export default function CurrentStatusSection() {
       {/* Legend */}
       <div className="flex flex-wrap gap-3 mb-4 text-xs">
         {[
-          ['At or above target', 'En/sobre objetivo'],
-          ['On track',           'En camino'],
-          ['Needs acceleration', 'Necesita acelerar'],
-          ['Far behind',         'Muy retrasado'],
-        ].map(([status]) => (
+          'At or above target',
+          'On track',
+          'Needs acceleration',
+          'Far behind',
+        ].map(status => (
           <PaceStatusBadge key={status} status={status} small />
         ))}
         <span className="text-gray-400 self-center ml-2">
-          · Colores por ritmo de avance necesario
+          · Colores por ritmo de avance necesario (cuota total)
         </span>
       </div>
 

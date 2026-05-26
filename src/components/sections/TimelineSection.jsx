@@ -88,14 +88,25 @@ export default function TimelineSection() {
       />
 
       {/* Interpretation note */}
-      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-900">
-        <strong>Hallazgo clave:</strong> La UE-27 avanza desde ≈8 % en 2004 hasta ≈{
-          eu27TimeSeries.find(d => d.year === 2024)?.share_ren_pct.toFixed(1)
-        } % en 2024, pero el ritmo medio histórico (≈0,9 pp/año) es claramente inferior
-        al ritmo necesario de ≈{
-          (( 42.5 - (eu27TimeSeries.find(d => d.year === 2024)?.share_ren_pct || 24)) / 6).toFixed(2)
-        } pp/año para alcanzar el 42,5 % en 2030.
-      </div>
+      {(() => {
+        const share2004 = eu27TimeSeries.find(d => d.year === 2004)?.share_ren_pct
+        const share2024 = eu27TimeSeries.find(d => d.year === 2024)?.share_ren_pct
+        const histPace  = (share2004 != null && share2024 != null)
+          ? ((share2024 - share2004) / 20).toFixed(2)
+          : '–'
+        const reqPace   = share2024 != null
+          ? ((42.5 - share2024) / 6).toFixed(2)
+          : '–'
+        return (
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-900">
+            <strong>Hallazgo clave:</strong> La UE-27 avanza desde ≈{share2004?.toFixed(1) ?? '–'} % en 2004
+            hasta ≈{share2024?.toFixed(1) ?? '–'} % en 2024,
+            pero el ritmo medio histórico (≈{histPace} pp/año)
+            es claramente inferior al ritmo necesario de ≈{reqPace} pp/año
+            para alcanzar el 42,5 % en 2030.
+          </div>
+        )
+      })()}
 
       <p className="text-xs text-gray-400 mt-3">
         Fuente: Eurostat NRG_IND_REN · Cuota total sobre consumo final bruto · Datos 2004–2024.

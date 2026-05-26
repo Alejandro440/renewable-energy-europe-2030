@@ -23,7 +23,7 @@
 | `is_eu27_member`   | Booleano    | Metadato   | `true` si es Estado miembro de la UE-27; `false` para IS, NO, EU27_2020.                    |
 | `gap_to_target_pp` | Numérico    | Medida     | Distancia al objetivo del 42,5 % en puntos porcentuales. Negativo = objetivo superado. Solo calculado para sector `REN`, año 2024, pero disponible en todas las filas del mismo país. |
 | `required_pace`    | Numérico    | Medida     | Ritmo anual necesario (pp/año) para alcanzar 42,5 % en 2030 desde el dato de 2024. `0` si ya superado el objetivo. Solo calculado para sector `REN`. Fórmula: `max(0, 42.5 − share_2024) / (2030 − 2024)`. |
-| `recent_pace`      | Numérico    | Medida     | Variación media anual de `share_ren_pct` entre 2020 y 2024 para el sector `REN` (pp/año). |
+| `recent_pace`      | Numérico    | Medida     | Ritmo anual neto observado entre 2020 y 2024 para el sector `REN` (pp/año). Fórmula: `(share_2024 − share_2020) / (2024 − 2020)`. |
 | `pace_status`      | Cadena      | Medida     | Clasificación interpretativa del avance (ver tabla inferior).                                |
 | `yoy_change`       | Numérico    | Medida     | Variación interanual de `share_ren_pct` en puntos porcentuales. Calculada para todos los sectores y años. |
 

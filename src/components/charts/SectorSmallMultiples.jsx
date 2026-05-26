@@ -70,7 +70,7 @@ function SectorPanel({ sector, data, maxVal }) {
             labelStyle={{ fontWeight: 600 }}
             contentStyle={{ fontSize: 11 }}
           />
-          {sector !== 'Transport' && (
+          {sector === 'Total' && (
             <ReferenceLine
               x={TARGET}
               stroke="#003399"
@@ -90,7 +90,7 @@ function SectorPanel({ sector, data, maxVal }) {
           {(sorted.filter(d => d.share_ren_pct != null).reduce((s, d) => s + (d.share_ren_pct||0), 0) /
            Math.max(1, sorted.filter(d => d.share_ren_pct != null).length)).toFixed(1)}%
         </strong>
-        {sector !== 'Transport' && <span className="ml-1 text-blue-500">· ─ obj. 42,5%</span>}
+        {sector === 'Total' && <span className="ml-1 text-blue-500">· ─ obj. 42,5%</span>}
       </p>
     </div>
   )

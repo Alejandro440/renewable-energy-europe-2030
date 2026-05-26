@@ -43,7 +43,7 @@ Las transformaciones principales, en orden:
    - `yoy_change`: diferencia entre valor del año y del año anterior (por país y sector).
    - `gap_to_target_pp`: 42,5 − cuota_2024 (para sector REN).
    - `required_pace`: max(0, gap) / 6.
-   - `recent_pace`: media de yoy_change entre 2020 y 2024 (sector REN).
+   - `recent_pace`: ritmo neto anual (sector REN) = `(share_2024 − share_2020) / 4`. Evita incluir la variación 2019→2020 (COVID) que sesgaría la media de diferencias anuales.
    - `pace_status`: clasificación basada en comparación required_pace vs recent_pace.
 6. Exportación a JSON (consumido por la app) y CSV (para reproducibilidad e inspección).
 
@@ -89,9 +89,10 @@ Todas las interacciones tienen un propósito narrativo: responder una de las cin
 
 ## 8. Consideraciones de accesibilidad
 
-- **Contraste:** todos los colores de texto sobre fondo claro o oscuro cumplen un contraste de al menos 4,5:1 (WCAG AA).
+- **Contraste:** los colores de texto principal sobre fondo claro u oscuro se han diseñado para aproximarse al contraste WCAG AA (≥ 4,5:1), aunque no se ha realizado una auditoría exhaustiva con herramienta automatizada.
 - **No depender solo del color:** los estados de avance se codifican con color + icono circular + etiqueta de texto (PaceStatusBadge).
-- **Navegación por teclado:** todos los botones y controles son focusables y tienen estado `focus-visible` definido (anillo amarillo, visible en fondo oscuro).
+- **Navegación por teclado (controles):** todos los botones, checkboxes y controles de filtro son focusables y tienen estado `focus-visible` definido.
+- **Navegación por teclado (mapa):** los paths de países con datos tienen `tabindex="0"`, `role="button"` y `aria-label` descriptivos, lo que permite recorrer los países con Tab y activar el tooltip de información con foco. La interacción completa del mapa sigue siendo principalmente de ratón.
 - **ARIA:** los gráficos SVG tienen `aria-label` descriptivos. Los botones de filtro tienen `aria-pressed`.
 - **Skip link:** botón "Saltar al contenido principal" para usuarios de lector de pantalla.
 - **Tipografía:** Inter (sans-serif), tamaños mínimos de 10px en etiquetas de gráficos, 12px en UI.

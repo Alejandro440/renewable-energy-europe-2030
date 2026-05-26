@@ -30,6 +30,18 @@ export default function GeographicSection() {
   const regionLabel = { North:'Norte', West:'Oeste', South:'Sur', East:'Este' }
   const regionColor = { North:'#1565c0', West:'#6a1b9a', South:'#e65100', East:'#2e7d32' }
 
+  // Dynamic values for insight text
+  const byCode = useMemo(() => Object.fromEntries(eu27Data.map(d => [d.geo_code, d])), [eu27Data])
+  const shareOf = (code) => byCode[code]?.share_ren_pct?.toFixed(1) ?? '–'
+  const top4 = useMemo(() =>
+    [...eu27Data].sort((a, b) => b.share_ren_pct - a.share_ren_pct).slice(0, 4),
+    [eu27Data]
+  )
+  const bottom3 = useMemo(() =>
+    [...eu27Data].filter(d => d.share_ren_pct != null).sort((a, b) => a.share_ren_pct - b.share_ren_pct).slice(0, 3),
+    [eu27Data]
+  )
+
   return (
     <SectionWrapper
       id="mapa"
@@ -56,12 +68,16 @@ export default function GeographicSection() {
       <div className="mt-6 bg-indigo-50 border border-indigo-200 rounded-xl p-5 max-w-3xl">
         <h3 className="font-semibold text-indigo-900 mb-2">¿Se confirma el patrón Norte-Sur?</h3>
         <p className="text-indigo-800 text-sm leading-relaxed">
-          Los países nórdicos (Suecia 62,8 %, Finlandia 52,1 %, Dinamarca 46,5 %, Letonia 45,5 %)
-          encabezan el ranking gracias a su abundante hidroeléctrica, eólica y biomasa. Sin embargo,
-          el patrón no es simple: Austria (42,9 %) y Estonia (42,2 %) superan a muchos países del
-          sur, mientras que Malta (17,2 %), Bélgica (14,3 %) y Luxemburgo (14,7 %) muestran las
-          cuotas más bajas de la UE. La geografía energética sigue más la abundancia de recursos
-          naturales que el eje norte-sur clásico.
+          {top4.length >= 4 && (
+            <>
+              Los primeros cuatro países son {top4.map(d => `${d.geo_name} (${d.share_ren_pct?.toFixed(1)} %)`).join(', ')},
+              que encabezan el ranking gracias a su abundante hidroeléctrica, eólica y biomasa. Sin embargo,
+              el patrón no es simple: Austria ({shareOf('AT')} %) y Estonia ({shareOf('EE')} %) superan a muchos países del
+              sur, mientras que {bottom3.map(d => `${d.geo_name} (${d.share_ren_pct?.toFixed(1)} %)`).join(', ')} muestran las
+              cuotas más bajas de la UE-27. La geografía energética sigue más la abundancia de recursos
+              naturales que el eje norte-sur clásico.
+            </>
+          )}
         </p>
       </div>
 
