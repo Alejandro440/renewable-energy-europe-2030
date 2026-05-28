@@ -23,7 +23,7 @@ export default function FilterBar() {
     <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-8 lg:px-16 py-2 flex flex-wrap gap-4 items-center text-sm">
       {/* Sector */}
       <div className="flex items-center gap-2">
-        <span className="font-medium text-gray-600 whitespace-nowrap">Sector para evolución:</span>
+        <span className="font-medium text-gray-600 whitespace-nowrap">Sector:</span>
         <div className="flex gap-1">
           {sectors.map(s => (
             <button
