@@ -32,7 +32,7 @@ function CustomTooltip({ active, payload, label }) {
   )
 }
 
-export default function TimelineChart({ eu27Series, countrySeries, countryNames }) {
+export default function TimelineChart({ eu27Series, countrySeries, countryNames, showTarget = true }) {
   // Build combined data keyed by year
   const allYears = Array.from(
     new Set([...eu27Series.map(d => d.year), ...countrySeries.flatMap(s => s.map(d => d.year))])
@@ -73,20 +73,22 @@ export default function TimelineChart({ eu27Series, countrySeries, countryNames 
           iconType="circle"
           wrapperStyle={{ fontSize: 12 }}
         />
-        {/* Target reference line */}
-        <ReferenceLine
-          y={TARGET}
-          stroke="#003399"
-          strokeWidth={2}
-          strokeDasharray="6 3"
-          label={{
-            value: 'Objetivo 2030 (42,5 %)',
-            position: 'insideTopRight',
-            fontSize: 10,
-            fill: '#003399',
-            fontWeight: 600,
-          }}
-        />
+        {/* Target reference line — only for Total sector */}
+        {showTarget && (
+          <ReferenceLine
+            y={TARGET}
+            stroke="#003399"
+            strokeWidth={2}
+            strokeDasharray="6 3"
+            label={{
+              value: 'Objetivo 2030 (42,5 %)',
+              position: 'insideTopRight',
+              fontSize: 10,
+              fill: '#003399',
+              fontWeight: 600,
+            }}
+          />
+        )}
         {/* EU-27 main line */}
         <Line
           type="monotone"

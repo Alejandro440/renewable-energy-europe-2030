@@ -1,123 +1,119 @@
 # Guion del vídeo — Práctica Final de Visualización de Datos
 
-**Título:** ¿Está Europa en camino? La carrera de los países europeos hacia los objetivos de energía renovable 2030  
-**Duración prevista:** 5 minutos  
-**Autor:** Alejandro Alonso Anda  
-**Asignatura:** Visualización de Datos — Máster en Ciencia de Datos, UOC, 2026  
+**Título:** ¿Está Europa en camino? La carrera de los países europeos hacia los objetivos de energía renovable 2030
+**Duración prevista:** ~5 minutos (margen entre 4:45 y 5:30)
+**Autor:** Alejandro Alonso Anda
+**Asignatura:** Visualización de Datos — Máster Universitario en Ciencia de Datos, UOC, 2026
 
 ---
 
-## Estructura del guion
+## Cómo usar este guion
 
-### [00:00 – 00:25] Presentación del proyecto y pregunta central
-
-*[Pantalla: portada de la visualización, sección Hero]*
-
-"Hola. Me llamo Alejandro Alonso Anda y esta es la práctica final de Visualización de Datos del Máster en Ciencia de Datos de la UOC.
-
-La pregunta que guía todo el trabajo es simple pero urgente: ¿está Europa avanzando lo suficientemente rápido para cumplir sus objetivos de energía renovable en 2030?
-
-La Unión Europea se ha comprometido a alcanzar un 42,5 % de energía renovable sobre el consumo final bruto en 2030, según la Directiva RED III. Quedan seis años. Y como vamos a ver, para la gran mayoría de los países, el ritmo actual no es suficiente."
+Este guion está redactado para grabarse de un tirón leyendo a un ritmo natural (≈140 palabras por minuto). Las indicaciones entre corchetes son acciones en pantalla, no se leen en voz alta. Los números entre comillas corresponden exactamente a los valores que la aplicación muestra en tiempo de ejecución; si los datos se actualizan, las tarjetas KPI y el agregado EU27 cambiarán y conviene reajustar el guion en consecuencia.
 
 ---
 
-### [00:25 – 01:10] Dataset, preparación y métricas derivadas
+### [00:00 – 00:25]  Presentación del proyecto y pregunta central
 
-*[Pantalla: sección Hero con las tarjetas de KPI; posteriormente moverse al navegador de Eurostat]*
+*[Pantalla: portada / sección Hero, con el título grande y las cuatro tarjetas KPI visibles]*
 
-"Los datos provienen de Eurostat, concretamente de la tabla NRG_IND_REN —Share of Energy from Renewable Sources—, que registra, para cada país europeo y cada año desde 2004, el porcentaje de energía renovable desglosado por cuatro sectores: total, electricidad, calefacción/refrigeración y transporte.
+"Hola. Soy Alejandro Alonso Anda y esta es la práctica final de Visualización de Datos del Máster en Ciencia de Datos de la UOC.
 
-El dataset tiene aproximadamente 2.500 registros tras el pivoteo a formato largo —21 años por cuatro sectores y treinta entidades—. La preparación incluyó: separar el índice compuesto de Eurostat, pivotar de formato ancho a largo, limpiar las banderas de calidad (b para ruptura de serie, p para provisional), y filtrar entidades con series incompletas.
+La pregunta que estructura todo el trabajo es la que aparece en pantalla: ¿está Europa avanzando lo suficientemente rápido para cumplir su objetivo de energía renovable en 2030?
 
-Las variables derivadas más importantes son tres. La primera es `gap_to_target_pp`: cuántos puntos porcentuales le faltan a cada país para llegar al 42,5 %. La segunda es `required_pace`: el ritmo anual en puntos porcentuales que cada país necesita mantener desde 2024 hasta 2030 para llegar a tiempo. Su fórmula es: el máximo entre cero y la brecha restante dividida entre seis. Y la tercera es `recent_pace`: la variación media anual observada entre 2020 y 2024.
-
-`required_pace` es la métrica central de toda la visualización: no describe dónde está un país, sino si avanza lo suficientemente rápido."
+La Unión Europea, a través de la Directiva RED III, se comprometió a alcanzar al menos un 42,5 % de energía renovable sobre el consumo final bruto en 2030. Quedan seis años. Y como veremos, el ritmo actual no es suficiente para la mayoría de los países."
 
 ---
 
-### [01:10 – 02:10] Vista general y situación actual
+### [00:25 – 01:10]  Proceso de creación, dataset y métricas derivadas
 
-*[Pantalla: sección Estado actual — gráfico de barras horizontales]*
+*[Pantalla: seguir en Hero; señalar las KPI inferiores; opcional, breve cambio al panel de Eurostat o a `scripts/prepare_data.py`]*
 
-"Esta primera sección muestra el estado actual: la cuota renovable de cada uno de los 27 Estados miembros en 2024, ordenada de menor a mayor. La línea azul discontinua marca el objetivo del 42,5 %.
+"Los datos vienen de Eurostat, de la tabla NRG_IND_REN —Share of Energy from Renewable Sources—, que para cada país europeo y cada año desde 2004 registra el porcentaje de energía renovable desglosado por cuatro sectores: total, electricidad, calefacción y refrigeración, y transporte.
 
-*[Scrollear por el gráfico]*
+Tras descargar el archivo, un script en Python lo pasa de formato ancho a formato largo, limpia las banderas de calidad de Eurostat —«b» para ruptura de serie, «p» para provisional— y filtra las entidades. El resultado son 2.520 filas: 21 años por cuatro sectores por treinta entidades, que son los veintisiete Estados miembros más el agregado EU-27 e Islandia y Noruega como referencia externa.
 
-A primera vista, el resultado es llamativo. Solo cinco países han cruzado esa línea: Suecia con un 62,8 %, Finlandia con un 52 %, Dinamarca con un 46 %, Letonia con un 45 %, y Austria, que apenas supera el objetivo con un 43 %.
+A partir de ese dataset se calculan tres variables derivadas que son el corazón del proyecto. La primera es la brecha al objetivo, en puntos porcentuales. La segunda es el ritmo necesario, *required pace*: cuántos puntos porcentuales al año tiene que avanzar cada país desde 2024 hasta 2030 para llegar al 42,5 %. Y la tercera es el ritmo reciente: la variación neta observada entre 2020 y 2024.
 
-En el extremo opuesto están Bélgica, Luxemburgo, Irlanda y Malta, todos por debajo del 18 %. La media de la UE-27 se sitúa en torno al 24 %.
-
-*[Cambiar ordenación a 'ritmo necesario']*
-
-Si reordenamos por ritmo necesario, vemos que Bélgica necesita casi 5 puntos porcentuales al año. Luxemburgo y Malta, más de 4. Recordemos que el ritmo histórico medio de la UE ha sido de menos de un punto por año. La magnitud del reto es evidente."
+`required_pace` es la métrica que diferencia este proyecto. No describe dónde está un país, sino si está yendo lo bastante rápido."
 
 ---
 
-### [02:10 – 03:10] Required pace como núcleo narrativo
+### [01:10 – 02:00]  Presentación en vivo: estado actual
 
-*[Pantalla: sección Ritmo necesario — gráfico de mancuernas]*
+*[Pantalla: bajar a la sección «Estado actual». Gráfico de barras horizontales]*
 
-"Esta es la sección central de la visualización. El gráfico de mancuernas compara, para cada país, dos ritmos: el círculo de color muestra el ritmo necesario para llegar al 42,5 % en 2030. El rombo muestra el ritmo observado entre 2020 y 2024.
+"Esta primera sección muestra el estado actual: la cuota total de energía renovable de cada Estado miembro en 2024, ordenada por defecto de menor a mayor. La línea azul discontinua marca el objetivo del 42,5 %.
 
-*[Señalar países concretos]*
+Solo cinco países han cruzado esa línea: Suecia, con un 62,8 %; Finlandia, con un 52,1 %; Dinamarca, con un 46,5 %; Letonia, con un 45,5 %; y Austria, que apenas supera el objetivo con un 43 %.
 
-La interpretación es directa: cuando el rombo supera al círculo, el país está en camino. Solo tres países presentan esta situación: Estonia, Lituania y Portugal. El resto —veinticuatro países— necesita acelerar.
+En el extremo opuesto están Bélgica, con un 14,3 %, Luxemburgo, con un 14,7 %, Irlanda, con un 16,1 %, y Malta, con un 17,2 %, todos muy por debajo. La cuota agregada de la UE-27 está en torno al 25 %.
 
-Estonia y Lituania son casos interesantes: llevan un ritmo reciente de casi 2 puntos por año, lo que es suficiente porque ya están cerca del objetivo. Portugal, con un ritmo de 1,1 punto por año, también supera sus 1,0 punto necesario.
+*[Acción: cambiar la ordenación a «Ritmo necesario ↓»]*
 
-En el otro extremo, Croacia ha experimentado incluso un retroceso en los últimos años, y países como Slovakia o Polonia tienen un ritmo reciente inferior a medio punto por año cuando necesitarían más de cuatro.
-
-La caja explicativa debajo del gráfico desglosa la fórmula para que cualquier usuario pueda verificar el cálculo por sí mismo."
+Si reordeno por ritmo necesario, las posiciones cambian completamente. Bélgica encabeza ahora la lista con un ritmo requerido de casi cinco puntos porcentuales al año hasta 2030. Luxemburgo, Irlanda, Malta y Polonia están todos por encima de cuatro puntos por año. El ritmo histórico medio de la UE-27 ha sido de menos de un punto por año. La magnitud del reto se percibe de inmediato."
 
 ---
 
-### [03:10 – 04:00] Asimetría sectorial e interacción
+### [02:00 – 02:50]  Preguntas clave: required pace como núcleo narrativo
 
-*[Pantalla: sección Sectores — small multiples]*
+*[Pantalla: sección «Ritmo necesario». Gráfico de mancuernas, fondo oscuro]*
 
-"La tercera dimensión analítica es la sectorial. Esta sección muestra los cuatro sectores en paralelo: total, electricidad, calefacción/refrigeración y transporte.
+"Esta es la sección central. El gráfico de mancuernas pone dos puntos para cada país: el círculo de color es el ritmo necesario hasta 2030; el rombo es el ritmo observado entre 2020 y 2024. La interpretación es directa: cuando el rombo está a la derecha del círculo, el país avanza lo suficiente.
 
-*[Señalar diferencias entre paneles]*
+Solo dos países cumplen esa condición: Estonia y Lituania. Ambos llevan un ritmo reciente de unos dos puntos por año, suficiente porque ya están muy cerca del objetivo. El resto de países o necesitan acelerar o están claramente retrasados.
 
-La diferencia es estructural. En electricidad, Islandia y Noruega pueden superar el 100 % por su condición de exportadores netos de electricidad renovable —producen más de lo que consumen y exportan el excedente. En el panel de transporte, en cambio, la mayoría de países está por debajo del 15 %.
+En el otro extremo, Croacia muestra incluso un retroceso reciente, y países como Polonia o Eslovaquia llevan un ritmo de medio punto por año o menos cuando necesitarían cuatro veces más.
 
-El agregado EU27_2020 de Eurostat sitúa la cuota en electricidad en torno al 46 % y la de transporte en torno al 10 %: una brecha de más de 35 puntos porcentuales entre el sector más avanzado y el más rezagado.
-
-*[Usar el filtro de región: clic en 'Norte']*
-
-Con el filtro de región activo —aquí selecciono los países del Norte— vemos cómo incluso en esta región líder, el transporte sigue siendo el talón de Aquiles. Los países nórdicos tienen electricidades casi completamente renovables, pero sus cuotas de transporte son similares a las del resto de Europa.
-
-*[Mostrar FilterBar: cambiar a sector Electricidad y navegar a la sección Evolución temporal]*
-
-El selector superior permite cambiar el sector analizado en las vistas donde tiene sentido metodológico, especialmente en la evolución temporal. La sección Estado actual se mantiene fija en la cuota total porque las métricas de brecha, ritmo necesario y estado de avance solo se calculan para el total."
+La caja explicativa de arriba muestra la fórmula. Es deliberadamente simple: la brecha al objetivo dividida entre los años que quedan. Cualquier persona puede verificar el cálculo con los datos que se muestran en los tooltips."
 
 ---
 
-### [04:00 – 04:40] Patrones geográficos / evolución temporal
+### [02:50 – 03:40]  Asimetría sectorial e interactividad
 
-*[Pantalla: sección Mapa; luego sección Evolución temporal]*
+*[Pantalla: bajar a la sección «Sectores». Cuatro paneles en small multiples]*
 
-"El mapa coroplético confirma visualmente lo que ya sugerían los datos: los países nórdicos y bálticos lideran en verde oscuro. Sin embargo, el patrón no es simplemente norte-sur. Austria, en Europa occidental, supera a muchos países del norte de Europa central. Y Malta y Bélgica, ambos en el oeste y el sur respectivamente, están entre los más rezagados.
+"La tercera dimensión analítica es la sectorial. Aquí veo en paralelo los cuatro sectores: total, electricidad, calefacción, transporte. La línea de referencia del 42,5 % aparece solo en el panel total, porque el objetivo de la Directiva RED III se aplica al total, no a cada sector individual.
 
-*[Cambiar métrica del mapa a 'estado de avance']*
+La asimetría salta a la vista. El agregado de la UE-27 está en torno al 47 % de renovables en electricidad y solo un 11 % en transporte: una brecha estructural de unos 36 puntos porcentuales entre el sector más avanzado y el más rezagado. Catorce países de la UE ya superan el 42,5 % en electricidad; en transporte, solo tres países pasan del 15 %.
 
-Cambiando a la vista de estado de avance, el mapa se vuelve mayoritariamente rojo. Solo cinco países en verde —los que ya alcanzaron el objetivo— y prácticamente toda Europa central y oriental en rojo intenso.
+*[Acción: activar el filtro de región «Norte» en la barra superior]*
 
-*[Pasar a sección Evolución temporal; seleccionar DE, PL, SE, ES]*
+Si filtro por la región Norte, los paneles muestran solo Suecia, Finlandia, Dinamarca, Estonia, Letonia y Lituania. Incluso en esta región líder, el transporte sigue siendo el talón de Aquiles.
 
-La sección temporal muestra la trayectoria desde 2004. La línea azul gruesa es la UE-27. Selecciono Suecia, Polonia, Alemania y España para comparar. Suecia partía ya del 40 % en 2004 y ha seguido creciendo. Polonia apenas ha avanzado. La aceleración más reciente se nota en Alemania, que ha acelerado visiblemente desde 2020 gracias a la expansión solar."
+*[Acción: subir a la barra de filtros y cambiar el sector a «Electricidad»; bajar a la sección Evolución temporal]*
+
+El filtro de sector solo afecta a la sección de evolución temporal, donde tiene sentido metodológico cambiar de indicador. Las secciones de estado actual y ritmo necesario se mantienen siempre en el total, porque las métricas de brecha y ritmo solo se calculan para el agregado."
 
 ---
 
-### [04:40 – 05:20] Reflexión final, limitaciones y cierre
+### [03:40 – 04:25]  Patrón geográfico y evolución temporal
 
-*[Pantalla: sección Conclusiones]*
+*[Pantalla: sección Evolución temporal. Subo el filtro al sector «Total» antes de continuar]*
 
-"Las conclusiones resumen cinco hallazgos: la UE-27 necesita triplicar su ritmo histórico; solo cinco países han alcanzado el objetivo; la brecha entre electricidad y transporte es estructural; el patrón geográfico existe pero no es simple; y el tiempo se acorta con cada año que pasa.
+"En la sección temporal veo la trayectoria desde 2004. La línea azul gruesa es la UE-27. Por defecto se comparan Alemania, Suecia, Polonia y España. Suecia partía del 38 % en 2004 y ha seguido subiendo. Polonia ha avanzado mucho más despacio. Alemania ha acelerado visiblemente desde 2020 gracias a la expansión solar y eólica. España se mantiene cerca de la media europea.
 
-En cuanto a las limitaciones: el objetivo del 42,5 % es para el total, no para cada sector, así que la comparación sectorial es ilustrativa de asimetrías, no de cumplimiento. Los datos de 2024 pueden ser provisionales. Y no se han incluido objetivos nacionales específicos por la dificultad de documentarlos con rigor suficiente.
+*[Pantalla: bajar a la sección «Mapa geográfico»]*
 
-La reflexión más importante del proceso es esta: el mayor reto al diseñar esta visualización no fue técnico, sino narrativo. Transformar una tabla de porcentajes en una historia sobre velocidad, urgencia y disparidad requirió pensar antes en qué pregunta responder y luego en qué gráfico usar. La métrica `required_pace` no estaba en los datos de Eurostat: hubo que derivarla con sentido conceptual claro para que la visualización dijera algo que los datos solos no decían.
+El mapa coroplético confirma el patrón visual. Los países nórdicos y bálticos están en verde oscuro; gran parte del centro y el oeste, en rojo. Pero el patrón no es estrictamente norte-sur: Austria, en pleno centro de Europa, supera a Estonia; y Malta, en el sur, está entre los más retrasados.
+
+*[Acción: cambiar la métrica del mapa a «Ritmo necesario»]*
+
+Si cambio la métrica del mapa al ritmo necesario, el resultado es elocuente: solo cinco países en verde oscuro —los que ya alcanzaron el objetivo— y prácticamente toda Europa occidental, central y oriental, en naranja o rojo."
+
+---
+
+### [04:25 – 05:10]  Reflexión final, accesibilidad y cierre
+
+*[Pantalla: sección «Conclusiones»]*
+
+"Las conclusiones reúnen los cinco hallazgos. El primero, y el más contundente: para alcanzar el 42,5 % en 2030, la UE-27 necesita un ritmo unas cuatro veces superior al histórico —el cálculo aparece en pantalla, hecho con los datos cargados, no con cifras hardcodeadas. El segundo: solo cinco países han alcanzado ya el objetivo y solo dos más mantienen un ritmo reciente suficiente para llegar a tiempo. El tercero: la electricidad avanza; el transporte, no. El cuarto: el patrón geográfico existe pero no es simple. Y el quinto: el tiempo se acorta cada año.
+
+En cuanto a accesibilidad, los estados de avance se codifican con color y etiqueta textual, los controles tienen estado `aria-pressed`, el mapa permite navegación por teclado en los países con datos, y hay un *skip link* al contenido principal.
+
+Y como limitaciones: el objetivo del 42,5 % solo se aplica al total, así que la comparación sectorial es ilustrativa de asimetrías, no de cumplimiento; los datos de 2024 son provisionales para algunos países; y no se incluyen objetivos nacionales específicos por la dificultad de documentar todas las fuentes con rigor.
+
+La reflexión final: el mayor reto al diseñar esta visualización no fue técnico, sino narrativo. La métrica `required_pace` no estaba en los datos de Eurostat; hubo que derivarla con sentido conceptual claro. Sin ella, este proyecto sería un mapa más de cuotas renovables; con ella, responde a una pregunta concreta —¿va Europa lo bastante rápido?— y la respuesta, con los datos en la mano, es que, en general, no.
 
 Gracias."
 
@@ -125,8 +121,9 @@ Gracias."
 
 ## Notas para la grabación
 
-- Duración total: ~5 minutos (ajustable si se habla más lento)
-- Usar zoom/spotlight en las zonas relevantes del gráfico al narrar
-- Para la demostración del mapa: asegurarse de que el TopoJSON ha cargado antes de iniciar la grabación
-- Mostrar el filtro de región activo al menos en una sección para evidenciar la interactividad
-- Pronunciar correctamente: "required pace" (en inglés) o "ritmo necesario" (preferir español en la narración)
+- Duración total objetivo: 5 minutos, ritmo natural (140 wpm aproximado).
+- Pronunciación: «*required pace*» en inglés solo en la introducción; en el resto, «ritmo necesario».
+- Antes de empezar, asegurarse de que el mapa ha cargado (países coloreados, no grises) y de que el navegador está a una resolución ≥ 1280 px.
+- Volver siempre el sector al «Total» antes de pasar de la sección «Sectores» a la de «Evolución temporal», y dejar el mapa en «Cuota renovable» al cierre.
+- No leer las acciones entre corchetes; son indicaciones para el operador o para uno mismo si se graba en solitario.
+- Si la grabación pasa de 5:30, recortar primero las cifras detalladas de la sección «Estado actual» y las descripciones del mapa: ambos bloques son los más fácilmente abreviables sin perder narrativa.

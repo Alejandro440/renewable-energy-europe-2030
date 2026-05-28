@@ -14,11 +14,19 @@ const SECTOR_TO_NRGBAL = {
   'Transport':         'REN_TRA',
 }
 
+const SECTOR_LABEL_ES = {
+  'Total':             'cuota renovable total',
+  'Electricity':       'cuota renovable en electricidad',
+  'Heating & Cooling': 'cuota renovable en calefacción/refrigeración',
+  'Transport':         'cuota renovable en transporte',
+}
+
 export default function TimelineSection() {
   const { rawData, selectedSector } = useData()
   const [selected, setSelected] = useState(DEFAULT_COUNTRIES)
 
   const currentNrgBal = SECTOR_TO_NRGBAL[selectedSector] || 'REN'
+  const isTotal = selectedSector === 'Total'
 
   // Available EU-27 countries
   const available = EU27_CODES.map(code => ({
@@ -55,7 +63,7 @@ export default function TimelineSection() {
     <SectionWrapper
       id="evolucion"
       title="Evolución temporal: ¿se acelera la transición?"
-      subtitle="Cuota renovable total (%) desde 2004. EU-27 en azul oscuro. Selecciona países para comparar."
+      subtitle={`${SECTOR_LABEL_ES[selectedSector] || 'Cuota renovable'} (%) desde 2004. EU-27 en azul oscuro. Selecciona países para comparar. Cambia el sector con el filtro superior.`}
     >
       {/* Country selector */}
       <div className="mb-6">
@@ -85,10 +93,11 @@ export default function TimelineSection() {
         eu27Series={eu27TimeSeries}
         countrySeries={countrySeries}
         countryNames={countryNames}
+        showTarget={isTotal}
       />
 
-      {/* Interpretation note */}
-      {(() => {
+      {/* Interpretation note – shown only for sector Total because the 42,5 % target applies only to the aggregate */}
+      {isTotal ? (() => {
         const share2004 = eu27TimeSeries.find(d => d.year === 2004)?.share_ren_pct
         const share2024 = eu27TimeSeries.find(d => d.year === 2024)?.share_ren_pct
         const histPace  = (share2004 != null && share2024 != null)
@@ -106,10 +115,17 @@ export default function TimelineSection() {
             para alcanzar el 42,5 % en 2030.
           </div>
         )
-      })()}
+      })() : (
+        <div className="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-900">
+          <strong>Nota:</strong> el objetivo del 42,5 % de la Directiva RED III se aplica al{' '}
+          <em>total</em> de energía renovable, no a cada sector individual. Por eso la línea de
+          referencia no se muestra cuando se selecciona un sector específico. Vuelve al sector
+          <strong> Total</strong> para ver la comparación con el objetivo.
+        </div>
+      )}
 
       <p className="text-xs text-gray-400 mt-3">
-        Fuente: Eurostat NRG_IND_REN · Cuota total sobre consumo final bruto · Datos 2004–2024.
+        Fuente: Eurostat NRG_IND_REN · Datos 2004–2024.
       </p>
     </SectionWrapper>
   )

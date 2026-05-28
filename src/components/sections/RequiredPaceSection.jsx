@@ -15,7 +15,7 @@ const LATEST_YEAR = 2024
 const TARGET = 42.5
 
 export default function RequiredPaceSection() {
-  const { latestTotalAll, selectedRegion } = useData()
+  const { latestTotalAll, selectedRegion, rawData } = useData()
 
   const eu27Data = useMemo(() => {
     return latestTotalAll.filter(d => {
@@ -29,6 +29,17 @@ export default function RequiredPaceSection() {
   const hardestCountry = eu27Data.find(d => d.required_pace === maxRequired)
   const eu27Row = latestTotalAll.find(d => d.geo_code === 'EU27_2020')
   const eu27Req = eu27Row ? ((TARGET - eu27Row.share_ren_pct) / (2030 - LATEST_YEAR)).toFixed(2) : '–'
+
+  // Historical EU-27 pace 2004→latest (computed from data, not hardcoded)
+  const eu27Hist = useMemo(() => {
+    const series = rawData
+      .filter(d => d.geo_code === 'EU27_2020' && d.nrg_bal === 'REN')
+      .sort((a, b) => a.year - b.year)
+    const s2004 = series.find(d => d.year === 2004)?.share_ren_pct
+    const sLast = series.find(d => d.year === LATEST_YEAR)?.share_ren_pct
+    if (s2004 == null || sLast == null) return null
+    return ((sLast - s2004) / (LATEST_YEAR - 2004))
+  }, [rawData])
 
   return (
     <SectionWrapper
@@ -62,7 +73,13 @@ export default function RequiredPaceSection() {
           note={hardestCountry ? `${hardestCountry.required_pace.toFixed(2)} pp/año` : ''} color="#fca5a5" />
         <StatCard dark label="Países en camino" value={eu27Data.filter(d => ['At or above target','On track'].includes(d.pace_status)).length}
           note="Ritmo observado suficiente" color="#86efac" />
-        <StatCard dark label="Ritmo histórico UE" value="≈ 0,9 pp/año" note="Media 2004–2023 (real)" color="#93c5fd" />
+        <StatCard
+          dark
+          label="Ritmo histórico UE-27"
+          value={eu27Hist != null ? `≈ ${eu27Hist.toFixed(2)} pp/año` : '–'}
+          note={`Media 2004–${LATEST_YEAR} (real)`}
+          color="#93c5fd"
+        />
       </div>
 
       {/* Dumbbell chart */}
