@@ -50,31 +50,26 @@ export default function ConclusionsSection() {
 
   const FINDINGS = [
     {
-      icon: '🎯',
       title: `La UE-27 necesita ~${stats.historicalRatio}× su ritmo histórico`,
       text: `Desde 2004 hasta 2024, la UE-27 ha avanzado a un ritmo medio de aproximadamente ${stats.historicalPace} pp/año. Para alcanzar el 42,5 % en 2030 desde el nivel actual (≈${fmt(stats.eu27_2024)} %), necesita mantener un ritmo de ≈${stats.requiredPaceEU} pp/año —aproximadamente ${stats.historicalRatio} veces superior al histórico. Este es el hallazgo central y el mayor reto de la transición.`,
       color: '#b71c1c',
     },
     {
-      icon: '🏆',
       title: `Solo ${stats.atTarget.length} países han alcanzado el objetivo`,
       text: `${stats.atTarget.map(d => `${d.geo_name} (${fmt(d.share_ren_pct)} %)`).join(', ')} han superado ya el 42,5 %. ${stats.onTrack.length > 0 ? `${stats.onTrack.map(d => d.geo_name).join(' y ')} están en camino si mantienen su ritmo reciente.` : 'Ningún país adicional mantiene actualmente un ritmo reciente suficiente para llegar a tiempo.'} Los ${27 - stats.atTarget.length - stats.onTrack.length} países restantes necesitan acelerar significativamente.`,
       color: '#1b5e20',
     },
     {
-      icon: '⚡',
       title: 'La electricidad avanza; el transporte, no',
       text: 'La asimetría sectorial es la principal revelación de esta visualización. La electricidad renovable supera el 42,5 % en varios países gracias a la eólica y solar. El transporte, en cambio, promedia apenas un 10–15 % en la mayoría de países. Esta brecha es estructural y requiere políticas específicas de movilidad sostenible.',
       color: '#1565c0',
     },
     {
-      icon: '🗺️',
       title: 'El patrón geográfico es real pero no simple',
       text: 'Los países nórdicos lideran gracias a recursos hidroeléctricos y eólicos abundantes. Sin embargo, Malta, Bélgica y Luxemburgo muestran las cuotas más bajas de la UE, y Austria supera a países nórdicos como Estonia. La geografía energética sigue más la dotación de recursos que el eje norte-sur esperado.',
       color: '#6a1b9a',
     },
     {
-      icon: '⏱️',
       title: 'El tiempo se acorta: 6 años para el objetivo',
       text: `Con solo 6 años hasta 2030 (desde 2024), el margen de aceleración se reduce. Los países más rezagados —${stats.hardest.map(d => `${d.geo_name} (${fmtPace(d.required_pace)} pp/año)`).join(', ')}— necesitarían tasas de crecimiento sin precedente histórico para cumplir el objetivo europeo común.`,
       color: '#e65100',
@@ -103,14 +98,15 @@ export default function ConclusionsSection() {
       <div className="space-y-4 mb-8">
         <h3 className="font-semibold text-gray-800 text-lg">Hallazgos principales</h3>
         {FINDINGS.map((f, i) => (
-          <div key={i} className="flex gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50 hover:bg-gray-100 transition-colors">
-            <div className="text-3xl flex-shrink-0 mt-0.5" aria-hidden="true">{f.icon}</div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-1" style={{ color: f.color }}>
-                {i + 1}. {f.title}
-              </h4>
-              <p className="text-sm text-gray-600 leading-relaxed">{f.text}</p>
-            </div>
+          <div
+            key={i}
+            className="p-4 rounded-xl border-l-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+            style={{ borderLeftColor: f.color }}
+          >
+            <h4 className="font-semibold mb-1" style={{ color: f.color }}>
+              {i + 1}. {f.title}
+            </h4>
+            <p className="text-sm text-gray-600 leading-relaxed">{f.text}</p>
           </div>
         ))}
       </div>

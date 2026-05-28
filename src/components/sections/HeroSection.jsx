@@ -38,10 +38,9 @@ export default function HeroSection() {
     >
       <div className="max-w-6xl mx-auto w-full">
         {/* Badge */}
-        <div className="mb-6 flex items-center gap-3">
-          <span className="text-3xl" aria-hidden="true">☀️</span>
+        <div className="mb-6">
           <span className="text-yellow-300 text-sm font-semibold uppercase tracking-widest">
-            Visualización de Datos · UOC 2026
+            Visualización de Datos — UOC 2026
           </span>
         </div>
 

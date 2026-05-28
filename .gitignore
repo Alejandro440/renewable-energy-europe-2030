@@ -4,3 +4,7 @@ dist/
 *.local
 .env
 .env.*
+
+# Local-only working files (kept off the public repo)
+video/
+AUDITORIA_FINAL.md

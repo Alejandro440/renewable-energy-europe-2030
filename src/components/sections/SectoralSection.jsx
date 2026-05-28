@@ -50,19 +50,13 @@ export default function SectoralSection() {
           está muy por detrás de la del sistema eléctrico.
         </p>
         <div className="flex flex-wrap gap-3 text-sm">
-          <div className="flex items-center gap-2 bg-blue-100 rounded-lg px-3 py-1.5">
-            <span className="text-xl">⚡</span>
-            <div>
-              <span className="font-bold text-blue-900">{avgElec}%</span>
-              <span className="text-blue-700 ml-1">electricidad (UE-27)</span>
-            </div>
+          <div className="bg-blue-100 rounded-lg px-3 py-1.5">
+            <span className="font-bold text-blue-900">{avgElec}%</span>
+            <span className="text-blue-700 ml-1">electricidad (UE-27)</span>
           </div>
-          <div className="flex items-center gap-2 bg-green-100 rounded-lg px-3 py-1.5">
-            <span className="text-xl">🚗</span>
-            <div>
-              <span className="font-bold text-green-900">{avgTran}%</span>
-              <span className="text-green-700 ml-1">transporte (UE-27)</span>
-            </div>
+          <div className="bg-green-100 rounded-lg px-3 py-1.5">
+            <span className="font-bold text-green-900">{avgTran}%</span>
+            <span className="text-green-700 ml-1">transporte (UE-27)</span>
           </div>
         </div>
       </div>

@@ -61,10 +61,6 @@ renewable-energy-europe-2030/
 │   ├── data_dictionary.md       ← Diccionario de variables
 │   └── sources.md               ← Fuentes, metadatos y transformaciones
 │
-├── video/
-│   ├── guion_video.md           ← Guion del vídeo (listo para grabar)
-│   └── escaleta_video.md        ← Escaleta temporal y verificaciones
-│
 ├── informe_decisiones_diseno.md ← Informe académico de decisiones de diseño
 │
 ├── public/                      ← Assets estáticos (copiados en build)
